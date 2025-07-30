@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:shopping_app/presentation/views/dummy_screen.dart';
-import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/home_screen.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/main_screen.dart';
-import 'package:shopping_app/shared/theme/light_theme.dart';
+import 'package:shopping_app/shared/shared.dart';
 import 'di/di.dart';
 import 'providers/splash_provider.dart';
-import 'shared/navigation/route_generator.dart';
 import 'providers/localization_provider.dart';
 import 'providers/theme_provider.dart';
-import 'shared/app_persistance/app_local.dart';
-import 'shared/localization/app_localization.dart';
-import 'shared/theme/dark_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,6 +73,39 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      backgroundColor: context.theme.scaffoldBackgroundColor,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(AppAssets.splash, height: 200),
+              40.spaceY,
+              Text(
+                "Welcome to Shop",
+                style: AppTextstyle.headingTextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              16.spaceY,
+              Text(
+                "one-stop for online shopping.",
+                style: AppTextstyle.bodyTextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

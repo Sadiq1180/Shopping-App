@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomSearchField extends StatelessWidget {
+class CustomSearchField extends StatelessWidget implements PreferredSizeWidget {
   final String hintText;
   final Widget? trailing;
   final TextEditingController? controller;
@@ -19,6 +19,8 @@ class CustomSearchField extends StatelessWidget {
     this.showSearchButton = false,
     this.searchButtonColor = const Color(0xFFFFD700),
   });
+  @override
+  Size get preferredSize => const Size.fromHeight(64);
 
   @override
   Widget build(BuildContext context) {

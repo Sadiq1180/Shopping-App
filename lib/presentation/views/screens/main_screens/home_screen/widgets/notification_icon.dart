@@ -11,7 +11,7 @@ class NotificationIcon extends StatelessWidget {
   const NotificationIcon({
     super.key,
     this.icon = Icons.notifications_outlined,
-    this.notificationCount = 0,
+    this.notificationCount = 1,
     this.iconColor = Colors.black,
     this.badgeColor = const Color(0xFFFFD700),
     this.iconSize = 24,

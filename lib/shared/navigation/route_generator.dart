@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/home_screen.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/shop_screen.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/wishlist_screen/wishlist_screen.dart';
 import '../../main.dart';
 import '../../presentation/views/dummy_screen.dart';
 import '../../presentation/views/screens/main_screens/main_screen.dart';
@@ -20,17 +21,22 @@ final router = GoRouter(
       path: '/${DummyScreen.routeName}',
       builder: (context, state) => const DummyScreen(),
     ),
-    // GoRoute(
-    //   name: MainScreen.routeName,
-    //   path: '/${MainScreen.routeName}',
-    //   builder: (context, state) => const MainScreen(),
-    // ),
 
-    /// ADDED SCREEN FOR SPLIT APP
+    /// ADDED SCREEN FOR SHOPPING APP
     GoRoute(
       name: MainScreen.routeName,
       path: '/${MainScreen.routeName}',
       builder: (context, state) => const MainScreen(),
+    ),
+    GoRoute(
+      name: ShopScreen.routeName,
+      path: '/${ShopScreen.routeName}',
+      builder: (context, state) => const ShopScreen(),
+    ),
+    GoRoute(
+      name: WishlistScreen.routeName,
+      path: '/${WishlistScreen.routeName}',
+      builder: (context, state) => const WishlistScreen(),
     ),
   ],
 );

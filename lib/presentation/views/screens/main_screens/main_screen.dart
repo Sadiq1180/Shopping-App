@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/home_screen.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/shop_screen.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/wishlist_screen/wishlist_screen.dart';
 import 'package:shopping_app/presentation/widgets/custom_bottom_navigation.dart';
 
 import '../../../../providers/main_provider.dart';
@@ -18,10 +20,10 @@ class MainScreen extends ConsumerStatefulWidget {
 class _MainScreenState extends ConsumerState<MainScreen> {
   List<Widget> screens = [
     HomeScreen(),
-    Center(child: Text("something")),
-    Center(child: Text("something")),
-    Center(child: Text("something")),
-    Center(child: Text("something")),
+    ShopScreen(),
+    WishlistScreen(),
+    Center(child: Text("char screen")),
+    Center(child: Text("profile screen")),
   ];
 
   @override

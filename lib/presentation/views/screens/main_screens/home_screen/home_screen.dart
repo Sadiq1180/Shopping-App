@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopping_app/presentation/base_widgets/keyboard_aware.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/banner.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_card.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_class.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/search_field.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/section_header.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/title_with_button.dart';
@@ -14,38 +15,67 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Product> recommendedProducts = [
+      Product(
+        image: AppAssets.product1,
+        name: "Rick Owens",
+        price: 450,
+        isCartHighlighted: true,
+      ),
+      Product(
+        image: AppAssets.product2,
+        name: "Maison Margiela",
+        price: 62,
+        isCartHighlighted: true,
+      ),
+      Product(image: AppAssets.product3, name: "Dries Van Noten", price: 500),
+    ];
+
     return Scaffold(
-      appBar: SSenseHeader(),
+      appBar: const SSenseHeader(),
       body: KeyboardAware(
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                20.spaceY,
-                //Searc field
-                CustomSearchField(
+                10.spaceY,
+
+                /// Search field
+                const CustomSearchField(
                   trailing: Icon(Icons.search),
                   searchButtonColor: Colors.amber,
                   showSearchButton: true,
                 ),
-                20.spaceY,
+                10.spaceY,
 
-                ///Banner
-                PromotionalBanner(),
-                30.spaceY,
+                /// Banner
+                const PromotionalBanner(),
+                10.spaceY,
 
-                ///title with button
-                TitleWithOptionalButton(title: "Recommended Styles"),
-                20.spaceY,
+                /// Title
+                const TitleWithOptionalButton(title: "Recommended Styles"),
+                10.spaceY,
 
-                ///product vertical Card
-                ProductCard(
-                  image: AppAssets.person3,
-                  productName: "Dries Van Noten",
-                  price: "\$500",
-                  isCartHighlighted: true,
+                /// Horizontal Product List
+                SizedBox(
+                  height: 260,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: recommendedProducts.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 15),
+                    itemBuilder: (context, index) {
+                      final product = recommendedProducts[index];
+                      return ProductCard(
+                        image: product.image,
+                        productName: product.name,
+                        price: product.price.toInt(),
+                        // isCartHighlighted: true,
+                        isCartHighlighted: product.isCartHighlighted,
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
