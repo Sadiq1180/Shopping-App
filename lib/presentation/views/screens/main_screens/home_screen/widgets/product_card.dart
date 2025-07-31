@@ -8,7 +8,8 @@ class ProductCard extends StatefulWidget {
   final VoidCallback? onAddToCart;
   final VoidCallback? onTap;
   final bool isCartHighlighted;
-  final Widget? bottomContent; // Optional custom bottom widget
+  final bool isWishlistScreen;
+  // final Widget? bottomContent; // Optional custom bottom widget
 
   const ProductCard({
     super.key,
@@ -18,7 +19,8 @@ class ProductCard extends StatefulWidget {
     this.onAddToCart,
     this.onTap,
     this.isCartHighlighted = false,
-    this.bottomContent,
+    this.isWishlistScreen = false,
+    // this.bottomContent,
   });
 
   @override
@@ -101,7 +103,11 @@ class _ProductCardState extends State<ProductCard> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   3.spaceY,
-                  widget.bottomContent ?? _defaultBottomContent(),
+
+                  // if (!widget.isWishlistScreen) _defaultBottomContent(),
+                  widget.isWishlistScreen
+                      ? _wishListScreenContent()
+                      : _defaultBottomContent(),
                 ],
               ),
             ),
@@ -148,4 +154,24 @@ class _ProductCardState extends State<ProductCard> {
       ],
     );
   }
+}
+
+//optional for wishlist Screen
+Widget _wishListScreenContent() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Row(
+        children: const [
+          Icon(Icons.star, size: 16, color: Colors.orange),
+          SizedBox(width: 4),
+          Text("4.5 (235)", style: TextStyle(fontSize: 12)),
+        ],
+      ),
+      Text(
+        "\$200",
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    ],
+  );
 }

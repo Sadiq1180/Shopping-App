@@ -47,7 +47,9 @@ class _ProductGridScreenState extends State<ProductGridScreen> {
           },
         ),
         const SizedBox(height: 10),
-        Expanded(child: ProductGrid(products: allProducts)),
+        Expanded(
+          child: ProductGrid(products: allProducts, isWishlistScreen: false),
+        ),
       ],
     );
   }

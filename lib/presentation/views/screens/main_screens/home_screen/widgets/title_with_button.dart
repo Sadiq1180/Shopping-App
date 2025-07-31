@@ -34,6 +34,7 @@ class TitleWithOptionalButton extends StatelessWidget {
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Colors.black,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         if (showButton)

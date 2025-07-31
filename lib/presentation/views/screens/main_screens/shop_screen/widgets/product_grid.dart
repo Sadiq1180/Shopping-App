@@ -4,12 +4,15 @@ import 'package:shopping_app/presentation/views/screens/main_screens/home_screen
 
 class ProductGrid extends StatelessWidget {
   final List<Product> products;
-  final Widget Function(Product)? bottomContentBuilder;
+  final bool isWishlistScreen;
+
+  // final Widget? bottomContent;
 
   const ProductGrid({
     super.key,
     required this.products,
-    this.bottomContentBuilder,
+    required this.isWishlistScreen,
+    // this.bottomContent,
   });
 
   @override
@@ -32,9 +35,9 @@ class ProductGrid extends StatelessWidget {
           isCartHighlighted: product.isCartHighlighted,
           onAddToCart: () {},
           onTap: () {},
-          bottomContent: bottomContentBuilder != null
-              ? bottomContentBuilder!(product)
-              : null,
+          isWishlistScreen: isWishlistScreen,
+
+          // bottomContent: bottomContent
         );
       },
     );
