@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/cart_items_screen.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/shop_screen.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/wishlist_screen/wishlist_screen.dart';
 import '../../main.dart';
@@ -37,6 +38,11 @@ final router = GoRouter(
       name: WishlistScreen.routeName,
       path: '/${WishlistScreen.routeName}',
       builder: (context, state) => const WishlistScreen(),
+    ),
+    GoRoute(
+      name: CartScreen.routeName,
+      path: '/${CartScreen.routeName}',
+      builder: (context, state) => const CartScreen(),
     ),
   ],
 );

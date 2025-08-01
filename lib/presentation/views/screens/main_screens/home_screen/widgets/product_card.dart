@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 
 class ProductCard extends StatefulWidget {
-  final String image;
+  final Widget image;
   final String productName;
   final int price;
   final VoidCallback? onAddToCart;
   final VoidCallback? onTap;
   final bool isCartHighlighted;
   final bool isWishlistScreen;
-  // final Widget? bottomContent; // Optional custom bottom widget
 
   const ProductCard({
     super.key,
@@ -20,7 +19,6 @@ class ProductCard extends StatefulWidget {
     this.onTap,
     this.isCartHighlighted = false,
     this.isWishlistScreen = false,
-    // this.bottomContent,
   });
 
   @override
@@ -59,11 +57,7 @@ class _ProductCardState extends State<ProductCard> {
                   Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        widget.image,
-                        height: 100,
-                        fit: BoxFit.contain,
-                      ),
+                      child: SizedBox(height: 100, child: widget.image),
                     ),
                   ),
                   Positioned(
@@ -103,8 +97,6 @@ class _ProductCardState extends State<ProductCard> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   3.spaceY,
-
-                  // if (!widget.isWishlistScreen) _defaultBottomContent(),
                   widget.isWishlistScreen
                       ? _wishListScreenContent()
                       : _defaultBottomContent(),
@@ -117,7 +109,6 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  // Default price + cart icon layout
   Widget _defaultBottomContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,24 +145,23 @@ class _ProductCardState extends State<ProductCard> {
       ],
     );
   }
-}
 
-//optional for wishlist Screen
-Widget _wishListScreenContent() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Row(
-        children: const [
-          Icon(Icons.star, size: 16, color: Colors.orange),
-          SizedBox(width: 4),
-          Text("4.5 (235)", style: TextStyle(fontSize: 12)),
-        ],
-      ),
-      Text(
-        "\$200",
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    ],
-  );
+  Widget _wishListScreenContent() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: const [
+            Icon(Icons.star, size: 16, color: Colors.orange),
+            SizedBox(width: 4),
+            Text("4.5 (235)", style: TextStyle(fontSize: 12)),
+          ],
+        ),
+        Text(
+          "\$200",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
 }

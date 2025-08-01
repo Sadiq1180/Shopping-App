@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class Product {
   final String image;
   final String name;
@@ -6,6 +8,8 @@ class Product {
   final int? reviewCount;
   final bool isFavorite;
   final bool isCartHighlighted;
+  final VoidCallback? onAddToCart;
+  final VoidCallback? onTap;
 
   Product({
     required this.image,
@@ -15,5 +19,7 @@ class Product {
     this.reviewCount,
     this.isFavorite = false,
     this.isCartHighlighted = false,
+    this.onAddToCart,
+    this.onTap,
   });
 }

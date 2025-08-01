@@ -7,13 +7,21 @@ class BaseWidget extends StatelessWidget {
   final ApiResponse state;
   final Function? onReload;
   final Widget Function(BuildContext) builder;
-  const BaseWidget(
-      {super.key, required this.builder, required this.state, this.onReload});
+  const BaseWidget({
+    super.key,
+    required this.builder,
+    required this.state,
+    this.onReload,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (state.status == Status.loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+        ),
+      );
     } else if (state.status == Status.error) {
       return Center(child: IssueWidget(onRefresh: () => onReload?.call()));
     } else if (state.status == Status.noInternet ||

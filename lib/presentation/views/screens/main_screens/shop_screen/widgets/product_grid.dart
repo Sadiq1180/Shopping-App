@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_card.dart'; // Make sure path is correct
+import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_card.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_class.dart';
 
 class ProductGrid extends StatelessWidget {
   final List<Product> products;
   final bool isWishlistScreen;
 
-  // final Widget? bottomContent;
-
   const ProductGrid({
     super.key,
     required this.products,
     required this.isWishlistScreen,
-    // this.bottomContent,
   });
 
   @override
@@ -29,15 +26,18 @@ class ProductGrid extends StatelessWidget {
         final product = products[index];
 
         return ProductCard(
-          image: product.image,
+          image: Image.network(
+            product.image,
+            fit: BoxFit.contain,
+            height: 100,
+            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+          ),
           productName: product.name,
           price: product.price.toInt(),
           isCartHighlighted: product.isCartHighlighted,
-          onAddToCart: () {},
-          onTap: () {},
           isWishlistScreen: isWishlistScreen,
-
-          // bottomContent: bottomContent
+          onAddToCart: product.onAddToCart, // ✅ this was missing
+          onTap: product.onTap,
         );
       },
     );
