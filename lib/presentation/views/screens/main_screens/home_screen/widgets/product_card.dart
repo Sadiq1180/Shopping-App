@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/shared/app_snack_bar.dart';
+import 'package:shopping_app/shared/constants/app_colors.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends ConsumerStatefulWidget {
   final Widget image;
   final String productName;
   final int price;
   final VoidCallback? onAddToCart;
+  final VoidCallback? onDecreaseCart;
+  final VoidCallback? onRemoveFromCart;
+
   final VoidCallback? onTap;
   final bool isCartHighlighted;
   final bool isWishlistScreen;
@@ -16,17 +22,20 @@ class ProductCard extends StatefulWidget {
     required this.productName,
     required this.price,
     this.onAddToCart,
+    this.onDecreaseCart,
+    this.onRemoveFromCart,
     this.onTap,
     this.isCartHighlighted = false,
     this.isWishlistScreen = false,
   });
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  ConsumerState<ProductCard> createState() => _ProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _ProductCardState extends ConsumerState<ProductCard> {
   bool isFavorited = false;
+  int quantity = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +118,12 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
+  // default cart content
   Widget _defaultBottomContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        //price
         Text(
           "\$${widget.price}",
           style: const TextStyle(
@@ -121,31 +132,96 @@ class _ProductCardState extends State<ProductCard> {
             color: Colors.black,
           ),
         ),
-        GestureDetector(
-          onTap: widget.onAddToCart,
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: widget.isCartHighlighted
-                  ? const Color(0xFFFFD700)
-                  : Colors.transparent,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.grey.shade400,
-                width: widget.isCartHighlighted ? 0 : 1,
+        //quantity control
+        quantity == 0
+            ? GestureDetector(
+                onTap: () {
+                  print("added to cart");
+
+                  ///snackbar to show item added to the cart
+                  AppSnackBar.showSnackBar(
+                    '${widget.productName} added to cart',
+                    context: context,
+                  );
+
+                  setState(() {
+                    quantity = 1;
+                  });
+                  widget.onAddToCart?.call();
+                },
+                // add to cart button
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: widget.isCartHighlighted
+                        ? const Color(0xFFFFD700)
+                        : Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.grey.shade400,
+                      width: widget.isCartHighlighted ? 0 : 1,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            : Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (quantity > 0) {
+                        setState(() {
+                          quantity--;
+                        });
+                        widget.onDecreaseCart?.call();
+                        // widget.onRemoveFromCart?.call();
+                      } else {
+                        setState(() {
+                          quantity = 0;
+                        });
+                        widget.onRemoveFromCart?.call();
+                        print("remove from cart");
+                        AppSnackBar.showSnackBar(
+                          '${widget.productName} removed from cart',
+                          context: context,
+                        );
+                      }
+                    },
+                    child: const Icon(
+                      Icons.remove,
+                      size: 20,
+                      color: Colors.red,
+                    ),
+                  ),
+                  //display quantity
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      '$quantity',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        quantity++;
+                      });
+                      print("$quantity added to cart");
+                      widget.onAddToCart?.call();
+                    },
+                    child: const Icon(Icons.add, size: 20, color: Colors.green),
+                  ),
+                ],
               ),
-            ),
-            child: const Icon(
-              Icons.shopping_cart_outlined,
-              size: 16,
-              color: Colors.black,
-            ),
-          ),
-        ),
       ],
     );
   }
 
+  // for wishlist screen
   Widget _wishListScreenContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,9 +233,9 @@ class _ProductCardState extends State<ProductCard> {
             Text("4.5 (235)", style: TextStyle(fontSize: 12)),
           ],
         ),
-        Text(
+        const Text(
           "\$200",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

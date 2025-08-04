@@ -36,7 +36,8 @@ class ProductGrid extends StatelessWidget {
           price: product.price.toInt(),
           isCartHighlighted: product.isCartHighlighted,
           isWishlistScreen: isWishlistScreen,
-          onAddToCart: product.onAddToCart, // ✅ this was missing
+          onAddToCart: product.onAddToCart,
+          onDecreaseCart: product.onDecreaseCart,
           onTap: product.onTap,
         );
       },

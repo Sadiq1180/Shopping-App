@@ -1,37 +1,62 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Cart provider using StateNotifier to manage a list of product IDs in the cart
-final cartProvider = StateNotifierProvider<CartNotifier, List<int>>((ref) {
+class CartItem {
+  final int id;
+  int quantity;
+
+  CartItem({required this.id, this.quantity = 1});
+}
+
+final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
   return CartNotifier();
 });
 
-class CartNotifier extends StateNotifier<List<int>> {
+class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super([]);
 
-  /// Add a product to the cart
   void addItem(int productId) {
-    // Add duplicates: true (current behavior)
-    // To prevent duplicates, uncomment the following:
-    // if (!state.contains(productId)) {
-    //   state = [...state, productId];
-    // }
-
-    state = [...state, productId];
+    final index = state.indexWhere((item) => item.id == productId);
+    if (index != -1) {
+      state[index].quantity++;
+    } else {
+      state = [...state, CartItem(id: productId)];
+    }
+    state = [...state];
   }
 
-  /// Remove a specific product from the cart
+  void decreaseItem(int productId) {
+    final index = state.indexWhere((item) => item.id == productId);
+    if (index != -1) {
+      final currentItem = state[index];
+      if (currentItem.quantity > 1) {
+        // Decrease quantity
+        final updatedItem = CartItem(
+          id: currentItem.id,
+          quantity: currentItem.quantity - 1,
+        );
+        state = [
+          ...state.sublist(0, index),
+          updatedItem,
+          //  ...state.sublist(index + 1),
+        ];
+      } else {
+        // Remove item if quantity is 1 or less
+        removeItem(productId);
+      }
+    }
+  }
+
   void removeItem(int productId) {
-    state = state.where((id) => id != productId).toList();
+    state = state.where((item) => item.id != productId).toList();
   }
 
-  /// Clear all items from the cart
+  int getQuantity(int productId) {
+    return state.firstWhere((item) {
+      return item.id == productId;
+    }, orElse: () => CartItem(id: productId, quantity: 0)).quantity;
+  }
+
   void clearCart() {
     state = [];
   }
-
-  /// Get number of items in the cart
-  int get itemCount => state.length;
-
-  /// Check if a specific item is in the cart
-  bool isInCart(int productId) => state.contains(productId);
 }

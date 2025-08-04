@@ -10,7 +10,7 @@ import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen
 import 'package:shopping_app/providers/products_provider.dart';
 import 'package:shopping_app/shared/shared.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_class.dart';
-import 'package:shopping_app/providers/cart_provider.dart'; // ✅ Add this
+import 'package:shopping_app/providers/cart_provider.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   static const String routeName = "shop_screen";
@@ -64,9 +64,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     10.spaceX,
                     NotificationIcon(
                       icon: Icons.shopping_cart,
-                      notificationCount: ref
-                          .watch(cartProvider)
-                          .length, // 💡 live count here
+                      notificationCount: ref.watch(cartProvider).length,
                       onTap: () {
                         Navigation.pushNamed(CartScreen.routeName);
                       },
@@ -93,10 +91,21 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                                 name: e.title ?? '',
                                 price: e.price?.toDouble() ?? 0.0,
                                 isCartHighlighted: false,
+                                onDecreaseCart: () {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .decreaseItem(e.id!);
+                                },
+
                                 onAddToCart: () {
                                   ref
                                       .read(cartProvider.notifier)
                                       .addItem(e.id!);
+                                },
+                                onRemoveFromCart: () {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .removeItem(e.id!);
                                 },
                               ),
                             )

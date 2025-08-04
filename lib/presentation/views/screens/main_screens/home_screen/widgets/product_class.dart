@@ -9,6 +9,9 @@ class Product {
   final bool isFavorite;
   final bool isCartHighlighted;
   final VoidCallback? onAddToCart;
+  final VoidCallback? onDecreaseCart;
+  final VoidCallback? onRemoveFromCart;
+
   final VoidCallback? onTap;
 
   Product({
@@ -20,6 +23,8 @@ class Product {
     this.isFavorite = false,
     this.isCartHighlighted = false,
     this.onAddToCart,
+    this.onDecreaseCart,
+    this.onRemoveFromCart,
     this.onTap,
   });
 }

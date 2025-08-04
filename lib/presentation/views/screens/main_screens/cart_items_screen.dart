@@ -11,25 +11,39 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cartItemIds = ref.watch(cartProvider);
+    final cartItems = ref.watch(cartProvider);
+
     final productsModel =
         ref.watch(productsProvider).productRes?.data as ProductsModel?;
 
-    // Show only items that are in the cart
-    final cartItems = productsModel?.products
-        ?.where((product) => cartItemIds.contains(product.id))
+    final allProducts = productsModel?.products ?? [];
+    // Combine cart items with product info
+    final itemsInCart = cartItems
+        .map((cartItem) {
+          print('itemssssss${cartItem.quantity}');
+          try {
+            final product = allProducts.firstWhere((p) => p.id == cartItem.id);
+            return {'product': product, 'quantity': cartItem.quantity};
+          } catch (e) {
+            return null;
+          }
+        })
+        .whereType<Map<String, dynamic>>()
         .toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Cart"), centerTitle: true),
-      body: cartItems == null || cartItems.isEmpty
+      body: itemsInCart.isEmpty
           ? const Center(child: Text("No items in cart"))
           : ListView.separated(
               padding: const EdgeInsets.all(15),
-              itemCount: cartItems.length,
+              itemCount: itemsInCart.length,
               separatorBuilder: (_, __) => 10.spaceY,
               itemBuilder: (context, index) {
-                final product = cartItems[index];
+                final item = itemsInCart[index];
+                final product = item['product'];
+                final quantity = item['quantity'];
+
                 return Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -47,7 +61,9 @@ class CartScreen extends ConsumerWidget {
                         errorBuilder: (_, __, ___) =>
                             const Icon(Icons.broken_image),
                       ),
+
                       10.spaceX,
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,6 +81,20 @@ class CartScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
+                      ),
+                      // quantity and remove item column
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          //  show quantity
+                          Text(
+                            'Qty: $quantity',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
