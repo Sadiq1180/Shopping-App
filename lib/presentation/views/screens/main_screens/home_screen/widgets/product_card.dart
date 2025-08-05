@@ -168,24 +168,17 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       final productList = await AppLocal.ins.cartBox.get(
                         AppLocalKeys.product,
                       );
-                      if (productList == null || productList.isEmpty) {
-                        AppLocal.ins.cartBox.put(AppLocalKeys.product, [
-                          {
-                            // "id": widget.productId,
-                            "name": widget.productName,
-                            // "price": widget.price,
-                            // "image": widget.image,
-                            // "quantity": quantity,
-                          },
-                        ]);
-                      } else {
-                        productList.add({
-                          "name": widget.productName,
-                          "price": widget.price,
-                          "image": widget.image,
-                          "quantity": quantity,
-                        });
-                      }
+                      // if (productList == null || productList.isEmpty) {
+                      //   AppLocal.ins.cartBox.put(AppLocalKeys.product, [
+                      //     {
+                      //       // "id": widget.productId,
+                      //       "name": widget.productName,
+                      //       // "price": widget.price,
+                      //       // "image": widget.image,
+                      //       // "quantity": quantity,
+                      //     },
+                      //   ]);
+                      // } else {}
 
                       AppLocal.ins.cartBox.put(AppLocalKeys.product, [
                         {

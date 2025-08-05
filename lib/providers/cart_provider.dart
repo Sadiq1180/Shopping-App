@@ -10,6 +10,14 @@ class CartItem {
   CartItem copyWith({int? id, int? quantity}) {
     return CartItem(id: id ?? this.id, quantity: quantity ?? this.quantity);
   }
+
+  factory CartItem.fromMap(Map<String, dynamic> map) {
+    return CartItem(id: map['id'] as int, quantity: map['quantity'] as int);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'quantity': quantity};
+  }
 }
 
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
@@ -17,17 +25,38 @@ final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
 });
 
 class CartNotifier extends StateNotifier<List<CartItem>> {
-  CartNotifier() : super([]);
-  final _cartBoxName = Hive.box("CART_BOX");
-  void addItem(int productId) async {
-    await _cartBoxName.add("CART_BOX");
-    print("added to the database");
+  static const String _cartBoxName = "CART_BOX";
+  static const String _cartKey = "cart_items";
 
+  late Box _cartBox;
+
+  CartNotifier() : super([]) {
+    _init();
+  }
+
+  Future<void> _init() async {
+    _cartBox = Hive.box(_cartBoxName);
+    final storedItems = _cartBox.get(_cartKey);
+
+    if (storedItems != null && storedItems is List) {
+      final cartItems = storedItems
+          .whereType<Map>()
+          .map((item) => CartItem.fromMap(Map<String, dynamic>.from(item)))
+          .toList();
+      state = cartItems;
+    }
+  }
+
+  Future<void> _saveToHive() async {
+    final itemList = state.map((item) => item.toMap()).toList();
+    await _cartBox.put(_cartKey, itemList);
+  }
+
+  void addItem(int productId) {
     final index = state.indexWhere((item) => item.id == productId);
+
     if (index != -1) {
-      // Create a new CartItem with increased quantity
-      final updatedItem = CartItem(
-        id: state[index].id,
+      final updatedItem = state[index].copyWith(
         quantity: state[index].quantity + 1,
       );
       state = [
@@ -38,6 +67,8 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     } else {
       state = [...state, CartItem(id: productId)];
     }
+
+    _saveToHive();
   }
 
   void decreaseItem(int productId) {
@@ -45,39 +76,46 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     if (index != -1) {
       final currentItem = state[index];
       if (currentItem.quantity > 1) {
-        // Decrease quantity
-        final updatedItem = CartItem(
-          id: currentItem.id,
+        final updatedItem = currentItem.copyWith(
           quantity: currentItem.quantity - 1,
         );
         state = [
           ...state.sublist(0, index),
           updatedItem,
-          ...state.sublist(index + 1), // This was missing!
+          ...state.sublist(index + 1),
         ];
       } else {
-        // Remove item if quantity is 1 or less
         removeItem(productId);
       }
+      _saveToHive();
     }
   }
 
   void removeItem(int productId) {
     state = state.where((item) => item.id != productId).toList();
+    _saveToHive();
   }
 
   int getQuantity(int productId) {
-    return state.firstWhere((item) {
-      return item.id == productId;
-    }, orElse: () => CartItem(id: productId, quantity: 0)).quantity;
+    return state
+        .firstWhere(
+          (item) => item.id == productId,
+          orElse: () => const CartItem(id: -1, quantity: 0),
+        )
+        .quantity;
   }
 
-  // Get total number of items in cart (sum of all quantities)
   int get totalItems {
     return state.fold(0, (total, item) => total + item.quantity);
   }
 
   void clearCart() {
     state = [];
+    _saveToHive();
+  }
+
+  // Optionally: reload from Hive
+  void reloadCart() {
+    _init();
   }
 }

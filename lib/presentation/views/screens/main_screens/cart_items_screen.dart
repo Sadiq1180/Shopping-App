@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/total_amount_section.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
 import 'package:shopping_app/providers/products_provider.dart';
 import 'package:shopping_app/shared/app_persistance/app_local.dart';
+import 'package:shopping_app/shared/app_snack_bar.dart';
 import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 import 'package:shopping_app/domain/api_models/products_model.dart';
@@ -74,13 +76,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Cart"), centerTitle: true),
-      body: productList.isEmpty
-          ? const Center(child: Text("No items in cart"))
-          : Column(
-              children: [
-                //  Cart item list
-                Expanded(
-                  child: ListView.separated(
+      body: Column(
+        children: [
+          // 👇 Top area (cart items or empty message)
+          Expanded(
+            child: cartItems.isEmpty
+                ? const Center(child: Text("No items in cart"))
+                : ListView.separated(
                     padding: const EdgeInsets.all(15),
                     itemCount: itemsInCart.length,
                     separatorBuilder: (_, __) => 10.spaceY,
@@ -112,7 +114,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    product.title ?? '',
+                                    '${product.title}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -125,60 +127,84 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 ],
                               ),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Qty: $quantity',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                            // Quantity and delete button
+                            QuantityAndDeleteButton(
+                              product: product,
+                              ref: ref,
+                              quantity: quantity,
                             ),
                           ],
                         ),
                       );
                     },
                   ),
-                ),
+          ),
 
-                //  Total price section
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
+          //  Bottom Total section
+          TotalAmountSection(totalPrice: totalPrice),
+        ],
+      ),
+    );
+  }
+}
+
+class QuantityAndDeleteButton extends StatelessWidget {
+  const QuantityAndDeleteButton({
+    super.key,
+    required this.product,
+    required this.ref,
+    required this.quantity,
+  });
+
+  final dynamic product;
+  final WidgetRef ref;
+  final dynamic quantity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Remove Item'),
+                content: Text(
+                  'Are you sure you want to remove ${product.title} from the cart?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text('Cancel'),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
+                  TextButton(
+                    onPressed: () {
+                      ref.read(cartProvider.notifier).removeItem(product.id);
+                      Navigator.of(ctx).pop();
+                      AppSnackBar.showSnackBar(
+                        '${product.title} removed from cart',
+                        context: context,
+                      );
+                    },
+                    child: const Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.red),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Total:",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '\$${totalPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            );
+          },
+        ),
+        Text(
+          'Qty: $quantity',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
