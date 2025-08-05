@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/shared/app_snack_bar.dart';
-import 'package:shopping_app/shared/constants/app_colors.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
@@ -227,9 +226,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          children: const [
+          children: [
             Icon(Icons.star, size: 16, color: Colors.orange),
-            SizedBox(width: 4),
+            4.spaceX,
             Text("4.5 (235)", style: TextStyle(fontSize: 12)),
           ],
         ),

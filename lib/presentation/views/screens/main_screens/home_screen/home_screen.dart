@@ -62,10 +62,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: recommendedProducts.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 15),
+                        separatorBuilder: (_, __) => 15.spaceX,
                         itemBuilder: (context, index) {
                           final product = recommendedProducts[index];
                           return ProductCard(
+                            // productId: product.id!,
                             image: Image.network(
                               product.thumbnail ?? '',
                               fit: BoxFit.contain,

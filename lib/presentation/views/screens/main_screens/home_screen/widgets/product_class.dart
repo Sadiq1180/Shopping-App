@@ -11,6 +11,7 @@ class Product {
   final VoidCallback? onAddToCart;
   final VoidCallback? onDecreaseCart;
   final VoidCallback? onRemoveFromCart;
+  final int? productId;
 
   final VoidCallback? onTap;
 
@@ -26,5 +27,6 @@ class Product {
     this.onDecreaseCart,
     this.onRemoveFromCart,
     this.onTap,
+    this.productId,
   });
 }

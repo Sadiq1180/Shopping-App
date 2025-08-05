@@ -6,6 +6,7 @@ import 'package:shopping_app/presentation/base_widgets/keyboard_aware.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/cart_items_screen.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/notification_icon.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/search_field.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/category_tab.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/product_grid.dart';
 import 'package:shopping_app/providers/products_provider.dart';
 import 'package:shopping_app/shared/shared.dart';
@@ -22,11 +23,19 @@ class ShopScreen extends ConsumerStatefulWidget {
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
   final TextEditingController searchController = TextEditingController();
+  final List<String> categories = ['All', 'Electronics', 'Clothing', 'Shoes'];
+  int selectedCategoryIndex = 0;
 
   @override
   void initState() {
     super.initState();
     ref.read(productsProvider.notifier).getProducts();
+  }
+
+  void onCategorySelected(int index) {
+    setState(() {
+      selectedCategoryIndex = index;
+    });
   }
 
   @override
@@ -64,12 +73,20 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     10.spaceX,
                     NotificationIcon(
                       icon: Icons.shopping_cart,
-                      notificationCount: ref.watch(cartProvider).length,
+                      notificationCount: ref
+                          .watch(cartProvider)
+                          .fold(0, (total, item) => total + item.quantity),
                       onTap: () {
                         Navigation.pushNamed(CartScreen.routeName);
                       },
                     ),
                   ],
+                ),
+                10.spaceY,
+                CategoryTabs(
+                  categories: categories,
+                  selectedIndex: selectedCategoryIndex,
+                  onCategorySelected: onCategorySelected,
                 ),
                 10.spaceY,
 
@@ -87,10 +104,12 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                         products: products.products!
                             .map(
                               (e) => Product(
+                                productId: e.id,
                                 image: e.thumbnail ?? '',
                                 name: e.title ?? '',
                                 price: e.price?.toDouble() ?? 0.0,
                                 isCartHighlighted: false,
+
                                 onDecreaseCart: () {
                                   ref
                                       .read(cartProvider.notifier)
