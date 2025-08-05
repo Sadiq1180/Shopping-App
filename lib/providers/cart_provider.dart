@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 class CartItem {
   final int id;
@@ -17,8 +18,11 @@ final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
 
 class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super([]);
+  final _cartBoxName = Hive.box("CART_BOX");
+  void addItem(int productId) async {
+    await _cartBoxName.add("CART_BOX");
+    print("added to the database");
 
-  void addItem(int productId) {
     final index = state.indexWhere((item) => item.id == productId);
     if (index != -1) {
       // Create a new CartItem with increased quantity

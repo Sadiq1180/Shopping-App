@@ -9,6 +9,7 @@ import 'package:shopping_app/presentation/views/screens/main_screens/home_screen
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/category_tab.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/product_grid.dart';
 import 'package:shopping_app/providers/products_provider.dart';
+import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/shared.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/home_screen/widgets/product_class.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
@@ -77,6 +78,12 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           .watch(cartProvider)
                           .fold(0, (total, item) => total + item.quantity),
                       onTap: () {
+                        //  Retrieve recently stored product from Hive (if needed)
+                        // final recentProduct = AppLocal.ins.dataBox.get(
+                        //   AppLocalKeys.product,
+                        // );
+
+                        //  Navigate to CartScreen
                         Navigation.pushNamed(CartScreen.routeName);
                       },
                     ),

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:shopping_app/domain/data_models/cart_item_model.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/main_screen.dart';
 import 'package:shopping_app/shared/shared.dart';
 import 'di/di.dart';
@@ -12,6 +16,11 @@ import 'providers/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppLocal.ins.initStorage();
+
+  await Hive.initFlutter();
+  // Open cart box
+  await Hive.openBox("CART_BOX");
+  // await Hive.openBox<CartItemModel>('CART_BOX');
   await DI.initDI();
   runApp(const ProviderScope(child: MyApp()));
 }

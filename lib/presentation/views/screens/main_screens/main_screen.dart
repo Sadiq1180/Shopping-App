@@ -22,7 +22,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     HomeScreen(),
     ShopScreen(),
     WishlistScreen(),
-    Center(child: Text("char screen")),
+    Center(child: Text("chart screen")),
     Center(child: Text("profile screen")),
   ];
 

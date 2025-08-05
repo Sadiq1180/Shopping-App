@@ -6,8 +6,10 @@ class AppLocal {
 
   Future initStorage() async {
     await Hive.initFlutter();
-    final boxNames = [_appBoxName, _userBoxName, _dataBoxName];
+    final boxNames = [_appBoxName, _userBoxName, _dataBoxName, _cartBoxName];
     for (var box in boxNames) {
+      // await Hive.openBox<CartItemModel>(_cartBoxName);
+
       await Hive.openBox(box);
     }
   }
@@ -17,13 +19,13 @@ class AppLocal {
   final String _userBoxName = "USER_BOX";
   final String _dataBoxName = "DATA_BOX";
 
-  /// Product box name
-  final String _productBoxName = "PRODUCT_BOX";
+  /// cart box name
+  final String _cartBoxName = "CART_BOX";
 
   //Getter for Boxes
   Box get appBox => Hive.box(_appBoxName);
   Box get userBox => Hive.box(_userBoxName);
   Box get dataBox => Hive.box(_dataBoxName);
-  //getter for product box
-  Box get productBox => Hive.box(_productBoxName);
+  //getter for cart box
+  Box get cartBox => Hive.box(_cartBoxName);
 }

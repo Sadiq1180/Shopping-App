@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/shared/app_persistance/app_local.dart';
 import 'package:shopping_app/shared/app_snack_bar.dart';
+import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
@@ -161,10 +163,50 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       width: widget.isCartHighlighted ? 0 : 1,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 16,
-                    color: Colors.black,
+                  child: GestureDetector(
+                    onTap: () async {
+                      final productList = await AppLocal.ins.cartBox.get(
+                        AppLocalKeys.product,
+                      );
+                      if (productList == null || productList.isEmpty) {
+                        AppLocal.ins.cartBox.put(AppLocalKeys.product, [
+                          {
+                            // "id": widget.productId,
+                            "name": widget.productName,
+                            // "price": widget.price,
+                            // "image": widget.image,
+                            // "quantity": quantity,
+                          },
+                        ]);
+                      } else {
+                        productList.add({
+                          "name": widget.productName,
+                          "price": widget.price,
+                          "image": widget.image,
+                          "quantity": quantity,
+                        });
+                      }
+
+                      AppLocal.ins.cartBox.put(AppLocalKeys.product, [
+                        {
+                          // "id": widget.productId,
+                          "name": widget.productName,
+                          // "price": widget.price,
+                          // "image": widget.image,
+                          // "quantity": quantity,
+                        },
+                      ]);
+                      setState(() {
+                        quantity++;
+                      });
+                      print("$quantity added to cart");
+                      widget.onAddToCart?.call();
+                    },
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               )

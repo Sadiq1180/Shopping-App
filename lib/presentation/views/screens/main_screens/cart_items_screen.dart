@@ -2,25 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
 import 'package:shopping_app/providers/products_provider.dart';
+import 'package:shopping_app/shared/app_persistance/app_local.dart';
+import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 import 'package:shopping_app/domain/api_models/products_model.dart';
 
-class CartScreen extends ConsumerWidget {
+class CartScreen extends ConsumerStatefulWidget {
   static const String routeName = "cart_screen";
+
   const CartScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends ConsumerState<CartScreen> {
+  // dynamic productList;
+  List<dynamic> productList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // productList = AppLocal.ins.cartBox.clear();
+    getList();
+  }
+
+  void getList() {
+    final list = AppLocal.ins.cartBox.get(AppLocalKeys.product);
+    if (list != null && list is List) {
+      setState(() {
+        productList = list;
+      });
+
+      if (productList.isNotEmpty) {
+        print('nameeee ${productList[0]['name']}');
+        print('nameeee ${productList.length}');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cartItems = ref.watch(cartProvider);
 
     final productsModel =
         ref.watch(productsProvider).productRes?.data as ProductsModel?;
 
     final allProducts = productsModel?.products ?? [];
-    // Combine cart items with product info
+
+    // // Combine cart items with product info
     final itemsInCart = cartItems
         .map((cartItem) {
-          print('itemssssss${cartItem.quantity}');
           try {
             final product = allProducts.firstWhere((p) => p.id == cartItem.id);
             return {'product': product, 'quantity': cartItem.quantity};
@@ -31,75 +63,121 @@ class CartScreen extends ConsumerWidget {
         .whereType<Map<String, dynamic>>()
         .toList();
 
+    // // Calculate total price
+    final totalPrice = itemsInCart.fold<double>(
+      0,
+      (sum, item) =>
+          sum + ((item['product']?.price ?? 0) * (item['quantity'] ?? 1)),
+    );
+
+    // final recentProducts = AppLocal.ins.dataBox.get(AppLocalKeys.product);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Cart"), centerTitle: true),
-      body: itemsInCart.isEmpty
+      body: productList.isEmpty
           ? const Center(child: Text("No items in cart"))
-          : ListView.separated(
-              padding: const EdgeInsets.all(15),
-              itemCount: itemsInCart.length,
-              separatorBuilder: (_, __) => 10.spaceY,
-              itemBuilder: (context, index) {
-                final item = itemsInCart[index];
-                final product = item['product'];
-                final quantity = item['quantity'];
+          : Column(
+              children: [
+                //  Cart item list
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(15),
+                    itemCount: itemsInCart.length,
+                    separatorBuilder: (_, __) => 10.spaceY,
+                    itemBuilder: (context, index) {
+                      final item = itemsInCart[index];
+                      final product = item['product'];
+                      final quantity = item['quantity'];
 
-                return Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      Image.network(
-                        product.thumbnail ?? '',
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) =>
-                            const Icon(Icons.broken_image),
-                      ),
-
-                      10.spaceX,
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Row(
                           children: [
-                            Text(
-                              product.title ?? '',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            Image.network(
+                              product.thumbnail ?? '',
+                              height: 60,
+                              width: 60,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) =>
+                                  const Icon(Icons.broken_image),
+                            ),
+                            10.spaceX,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.title ?? '',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  4.spaceY,
+                                  Text(
+                                    '\$${product.price}',
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
                               ),
                             ),
-                            4.spaceY,
-                            Text(
-                              '\$${product.price}',
-                              style: const TextStyle(color: Colors.grey),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Qty: $quantity',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                      );
+                    },
+                  ),
+                ),
+
+                //  Total price section
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Total:",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      // quantity and remove item column
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          //  show quantity
-                          Text(
-                            'Qty: $quantity',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        '\$${totalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
                       ),
                     ],
                   ),
-                );
-              },
+                ),
+              ],
             ),
     );
   }
