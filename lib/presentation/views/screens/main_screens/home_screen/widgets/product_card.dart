@@ -110,7 +110,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   3.spaceY,
                   widget.isWishlistScreen
                       ? WishListScreenBottomContent()
-                      : _defaultBottomContent(),
+                      : DefaultBottomContent(),
                 ],
               ),
             ),
@@ -121,7 +121,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
   }
 
   // default cart content
-  Widget _defaultBottomContent() {
+  Widget DefaultBottomContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
