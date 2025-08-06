@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/wishlist_screen/widgets/wishlist_bottom_row.dart';
 import 'package:shopping_app/shared/app_persistance/app_local.dart';
 import 'package:shopping_app/shared/app_snack_bar.dart';
 import 'package:shopping_app/shared/constants/app_local_keys.dart';
@@ -108,7 +109,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   3.spaceY,
                   widget.isWishlistScreen
-                      ? _wishListScreenContent()
+                      ? WishListScreenBottomContent()
                       : _defaultBottomContent(),
                 ],
               ),
@@ -251,26 +252,6 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                 ],
               ),
-      ],
-    );
-  }
-
-  // for wishlist screen
-  Widget _wishListScreenContent() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.star, size: 16, color: Colors.orange),
-            4.spaceX,
-            Text("4.5 (235)", style: TextStyle(fontSize: 12)),
-          ],
-        ),
-        const Text(
-          "\$200",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
       ],
     );
   }
