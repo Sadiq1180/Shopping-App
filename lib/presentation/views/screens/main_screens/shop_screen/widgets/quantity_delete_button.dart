@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
 import 'package:shopping_app/shared/app_snack_bar.dart';
+import 'package:shopping_app/shared/extensions/sized_box.dart';
 
 class QuantityAndDeleteButton extends StatelessWidget {
   const QuantityAndDeleteButton({
@@ -18,13 +20,47 @@ class QuantityAndDeleteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        // ---- Improved +/- Buttons Row ---- //
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (quantity > 1) {
+                  ref.read(cartProvider.notifier).decreaseItem(product.id);
+                }
+              },
+              child: const Icon(
+                Icons.remove,
+                size: 20,
+                color: Colors.redAccent,
+              ),
+            ),
+
+            12.spaceX,
+            Text(
+              '$quantity',
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
+            12.spaceX,
+            GestureDetector(
+              onTap: () {
+                ref.read(cartProvider.notifier).addItem(product.id);
+              },
+              child: const Icon(Icons.add, size: 20, color: Colors.green),
+            ),
+          ],
+        ),
+
+        // ---- Delete Button with Confirmation ---- //
         IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () {
-            showDialog(
+            showCupertinoDialog(
               context: context,
-              builder: (ctx) => AlertDialog(
+              builder: (ctx) => CupertinoAlertDialog(
                 title: const Text('Remove Item'),
                 content: Text(
                   'Are you sure you want to remove ${product.title} from the cart?',
@@ -55,9 +91,11 @@ class QuantityAndDeleteButton extends StatelessWidget {
             );
           },
         ),
+
+        // ---- Quantity Label ---- //
         Text(
           'Qty: $quantity',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
       ],
     );

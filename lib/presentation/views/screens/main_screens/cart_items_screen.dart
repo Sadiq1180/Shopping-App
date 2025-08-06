@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/quantity_delete_button.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/total_amount_section.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
 import 'package:shopping_app/providers/products_provider.dart';
@@ -78,12 +79,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       appBar: AppBar(title: const Text("Cart"), centerTitle: true),
       body: Column(
         children: [
-          // 👇 Top area (cart items or empty message)
+          //  Top area
           Expanded(
             child: cartItems.isEmpty
                 ? const Center(child: Text("No items in cart"))
                 : ListView.separated(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(10),
                     itemCount: itemsInCart.length,
                     separatorBuilder: (_, __) => 10.spaceY,
                     itemBuilder: (context, index) {
@@ -92,7 +93,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       final quantity = item['quantity'];
 
                       return Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.only(
+                          top: 5,
+                          bottom: 5,
+                          right: 15,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(12),
@@ -127,6 +132,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 ],
                               ),
                             ),
+
                             // Quantity and delete button
                             QuantityAndDeleteButton(
                               product: product,
@@ -144,67 +150,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           TotalAmountSection(totalPrice: totalPrice),
         ],
       ),
-    );
-  }
-}
-
-class QuantityAndDeleteButton extends StatelessWidget {
-  const QuantityAndDeleteButton({
-    super.key,
-    required this.product,
-    required this.ref,
-    required this.quantity,
-  });
-
-  final dynamic product;
-  final WidgetRef ref;
-  final dynamic quantity;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Remove Item'),
-                content: Text(
-                  'Are you sure you want to remove ${product.title} from the cart?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      ref.read(cartProvider.notifier).removeItem(product.id);
-                      Navigator.of(ctx).pop();
-                      AppSnackBar.showSnackBar(
-                        '${product.title} removed from cart',
-                        context: context,
-                      );
-                    },
-                    child: const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        Text(
-          'Qty: $quantity',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
     );
   }
 }

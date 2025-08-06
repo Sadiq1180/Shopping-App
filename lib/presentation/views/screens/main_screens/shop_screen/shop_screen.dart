@@ -78,7 +78,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           .watch(cartProvider)
                           .fold(0, (total, item) => total + item.quantity),
                       onTap: () {
-                        //  Retrieve recently stored product from Hive (if needed)
+                        //  Retrieve recently stored product from Hive
                         // final recentProduct = AppLocal.ins.dataBox.get(
                         //   AppLocalKeys.product,
                         // );
