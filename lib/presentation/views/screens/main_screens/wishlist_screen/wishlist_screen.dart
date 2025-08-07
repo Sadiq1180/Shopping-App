@@ -61,32 +61,6 @@ class WishlistScreen extends StatelessWidget {
                   child: ProductGrid(
                     products: allProducts,
                     isWishlistScreen: true,
-                    // bottomContent: Row(
-                    //   children: [
-
-                    //   ],
-                    // ),
-                    // bottomContentBuilder: (product) {
-                    //   return Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Row(
-                    //         children: const [
-                    //           Icon(Icons.star, size: 16, color: Colors.orange),
-                    //           SizedBox(width: 4),
-                    //           Text("4.5 (235)", style: TextStyle(fontSize: 12)),
-                    //         ],
-                    //       ),
-                    //       Text(
-                    //         "\$${product.price}",
-                    //         style: const TextStyle(
-                    //           fontSize: 16,
-                    //           fontWeight: FontWeight.bold,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   );
-                    // },
                   ),
                 ),
               ],

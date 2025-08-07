@@ -39,6 +39,7 @@ class ProductGrid extends StatelessWidget {
           onAddToCart: product.onAddToCart,
           onDecreaseCart: product.onDecreaseCart,
           onTap: product.onTap,
+          // product: product,
         );
       },
     );

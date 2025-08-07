@@ -66,6 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         itemBuilder: (context, index) {
                           final product = recommendedProducts[index];
                           return ProductCard(
+                            // product: product,
                             // productId: product.id!,
                             image: Image.network(
                               product.thumbnail ?? '',

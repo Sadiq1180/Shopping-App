@@ -100,6 +100,7 @@ class _QuantityAndDeleteButtonState extends State<QuantityAndDeleteButton> {
                         '${widget.product.title} removed from cart',
                         context: context,
                       );
+                      print("${widget.product.title} removed from cart");
                     },
                     child: const Text(
                       'Delete',

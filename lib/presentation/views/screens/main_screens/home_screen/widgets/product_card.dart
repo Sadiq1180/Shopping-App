@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shopping_app/domain/data_models/product.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/wishlist_screen/widgets/wishlist_bottom_row.dart';
 import 'package:shopping_app/shared/app_persistance/app_local.dart';
 import 'package:shopping_app/shared/app_snack_bar.dart';
 import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
+import 'package:shopping_app/shared/shared.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
   final Widget image;
@@ -13,10 +15,10 @@ class ProductCard extends ConsumerStatefulWidget {
   final VoidCallback? onAddToCart;
   final VoidCallback? onDecreaseCart;
   final VoidCallback? onRemoveFromCart;
-
   final VoidCallback? onTap;
   final bool isCartHighlighted;
   final bool isWishlistScreen;
+  final Product? product;
 
   const ProductCard({
     super.key,
@@ -29,6 +31,7 @@ class ProductCard extends ConsumerStatefulWidget {
     this.onTap,
     this.isCartHighlighted = false,
     this.isWishlistScreen = false,
+    this.product,
   });
 
   @override
@@ -169,17 +172,17 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       final productList = await AppLocal.ins.cartBox.get(
                         AppLocalKeys.product,
                       );
-                      // if (productList == null || productList.isEmpty) {
-                      //   AppLocal.ins.cartBox.put(AppLocalKeys.product, [
-                      //     {
-                      //       // "id": widget.productId,
-                      //       "name": widget.productName,
-                      //       // "price": widget.price,
-                      //       // "image": widget.image,
-                      //       // "quantity": quantity,
-                      //     },
-                      //   ]);
-                      // } else {}
+                      if (productList == null || productList.isEmpty) {
+                        AppLocal.ins.cartBox.put(AppLocalKeys.product, [
+                          {
+                            // "id": widget.productId,
+                            "name": widget.productName,
+                            // "price": widget.price,
+                            // "image": widget.image,
+                            // "quantity": quantity,
+                          },
+                        ]);
+                      } else {}
 
                       AppLocal.ins.cartBox.put(AppLocalKeys.product, [
                         {
@@ -193,7 +196,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       setState(() {
                         quantity++;
                       });
-                      print("$quantity added to cart");
+                      print("${widget.productName.toTitleCase} added to cart");
                       widget.onAddToCart?.call();
                     },
                     child: const Icon(

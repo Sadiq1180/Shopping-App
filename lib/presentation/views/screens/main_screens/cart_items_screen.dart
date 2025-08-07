@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/quantity_delete_button.dart';
 import 'package:shopping_app/presentation/views/screens/main_screens/shop_screen/widgets/total_amount_section.dart';
 import 'package:shopping_app/providers/cart_provider.dart';
 import 'package:shopping_app/providers/products_provider.dart';
 import 'package:shopping_app/shared/app_persistance/app_local.dart';
-import 'package:shopping_app/shared/app_snack_bar.dart';
 import 'package:shopping_app/shared/constants/app_local_keys.dart';
 import 'package:shopping_app/shared/extensions/sized_box.dart';
 import 'package:shopping_app/domain/api_models/products_model.dart';
@@ -39,7 +39,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
       if (productList.isNotEmpty) {
         print('nameeee ${productList[0]['name']}');
-        print('nameeee ${productList.length}');
+        print('quantityyyy: ${productList.length}');
       }
     }
   }
@@ -145,6 +145,21 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     },
                   ),
           ),
+          /////-----------Button just for testing ---------------/////////////
+          // TextButton(
+          //   onPressed: () async {
+          //     final cartBox = await Hive.openBox('cartBox');
+          //     if (cartBox.isNotEmpty) {
+          //       ref.read(cartProvider.notifier).clearCart();
+          //       print(
+          //         'Cart was cleared. First product name: ${productList[0]['name']}',
+          //       );
+          //     } else {
+          //       print('Cart is already empty.');
+          //     }
+          //   },
+          //   child: Text("Clear Hive Box"),
+          // ),
 
           //  Bottom Total section
           TotalAmountSection(totalPrice: totalPrice),
